@@ -1,0 +1,7 @@
+cradle:
+  stack:
+    - path: "./src"
+      component: "ratones-test:lib"
+
+    - path: "./test"
+      component: "ratones-test:test:ratones-test-test"
