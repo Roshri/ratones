@@ -1,4 +1,4 @@
-module Lib where
+module Library where
 import Text.Show.Functions
 import PdePreludat
 
@@ -14,8 +14,16 @@ data Raton = UnRaton {
     nombre :: Nombre,
     edad :: Edad,
     peso :: Peso,
-    enferemedades :: [Enfermedad]
+    enfermedades :: [Enfermedad]
 }
+
+
+brucelosis,sarampion,tuberculosis,obesidad,sinusitis :: Enfermedad
+brucelosis = "brucelosis"
+sarampion = "sarampion"
+tuberculosis = "tuberculosis"
+obesidad = "obesidad"
+sinusitis = "sinusitis"
 
 cerebro :: Raton
 cerebro = UnRaton {
@@ -25,7 +33,7 @@ cerebro = UnRaton {
     enfermedades = [brucelosis, sarampion, tuberculosis]
 }
 
-bicenterrata :: UnRaton
+bicenterrata :: Raton
 bicenterrata = UnRaton {
     nombre = "Bicenterrata",
     edad = 256,
@@ -33,7 +41,7 @@ bicenterrata = UnRaton {
     enfermedades = []
 }
 
-huesudo :: UnRaton
+huesudo :: Raton
 huesudo = UnRaton {
     nombre = "Huesudo",
     edad = 4,
@@ -56,7 +64,7 @@ hierbaVerde sufijo raton = raton {enfermedades = filter (not . terminaCon sufijo
 
 
 terminaCon :: String -> String -> Bool
-terminaCon sufijo enfermedad = sufijo == drop (length enfermedad - length terminacion) enfermedad
+terminaCon sufijo enfermedad = sufijo == drop (length enfermedad - length sufijo) enfermedad
 
 
 alcachofa :: Hierba
@@ -77,10 +85,10 @@ perderEnfermedades :: Raton -> Raton
 perderEnfermedades raton = raton {enfermedades = []}
 
 hierbaZort :: Hierba
-hierbaZort raton = cambiarNombre "Pinky" . rejuvenecer 0 . perderEnfermedades
+hierbaZort raton = (cambiarNombre "Pinky" . rejuvenecer 0 . perderEnfermedades) raton
 
 eliminarEnfermedades :: Number -> Raton -> Raton
-eliminarEnfermedades letrasNombre raton = raton {enfermedades = filter ((<= letrasNombre).lenght) (enfermedades raton)}
+eliminarEnfermedades letrasNombre raton = raton {enfermedades = filter ((<= letrasNombre).length) (enfermedades raton)}
 
 hierbaDelDiablo :: Hierba
 hierbaDelDiablo = perderPeso 0.1 . eliminarEnfermedades 10
@@ -98,27 +106,30 @@ pondsAntiAge = componer [hierbaBuena, hierbaBuena, hierbaBuena, alcachofa]
 listaDeHierbas :: Number -> [Hierba]
 listaDeHierbas potencia = replicate potencia alcachofa ++ [hierbaVerde "obesidad"]
 
-reduceFatFast :: Medicamento
+reduceFatFast :: Number -> Medicamento
 reduceFatFast = componer . listaDeHierbas
 
 sufijosInfecciosas :: [String]
 sufijosInfecciosas = ["sis", "itis", "emia", "cocos"]
 
 pdepCilina :: Medicamento
-pdepCilina = componer (map (hierbaVerde sufijosInfecciosas))
+pdepCilina = componer (map hierbaVerde (sufijosInfecciosas))
 
 
-cantidadIdeal :: (Num a, Enum a) => (a -> Bool) -> a
-cantidadIdeal condicion = head (filter condicion [1..])
+-- cantidadIdeal :: (Number, Enum a) => (a -> Bool) -> a
+-- cantidadIdeal condicion = head (filter condicion [1..])
 
 
-ningunoConSobrepeso :: [Raton] -> Bool
+ningunConSobrepeso :: [Raton] -> Bool
 ningunConSobrepeso ratones = all ((< 1) . peso) ratones
 
 menosDe3Enfermedades :: [Raton] -> Bool
-menosDe3Enfermedades ratones = all ((< 3) . lengh . enfermedades) ratones
+menosDe3Enfermedades ratones = all ((< 3) . length . enfermedades) ratones
 
 lograEstabilizar :: Medicamento -> [Raton] -> Bool
-lograEstabilizar medicamento ratones = ningunoConSobrepeso (map medicamento ratones) &&  menosDe3Enfermedades (map medicamento ratones)
+lograEstabilizar medicamento ratones = ningunConSobrepeso (map medicamento ratones) &&  menosDe3Enfermedades (map medicamento ratones)
 
+
+experimento :: [Raton] -> Number
+experimento comunidad =
 
